@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-deploy
+  labels:
+    app: tomcat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcat
+  template:
+    metadata:
+      labels:
+        app: tomcat
+    spec:
+      containers:
+      - name: tomcat
+        image: raghudevops30/studentapp:v3
+        ports:
+        - containerPort: 8080
+        env:
+          - name: DB_IP
+            value: mariadb-service
+...
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: tomcat-service
+spec:
+  selector:
+    app: tomcat
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
+...
